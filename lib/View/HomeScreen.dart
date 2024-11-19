@@ -25,28 +25,66 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
-        title: const Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        title: const Text("News App"),
+        actions: const [
+          Icon(Icons.bookmark),
+          SizedBox(width: 15),
+          Icon(Icons.search),
+        ],
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
           children: [
-            Row(
-              children: [
-                Icon(Icons.menu),
-              ],
+            _buildHeader(),
+            ListTile(
+              leading: const Icon(Icons.home),
+              title: const Text("Home"),
+              onTap: () {
+                Navigator.pop(context);
+              },
             ),
-            Text("News App"),
-            Row(
-              children: [
-                Icon(Icons.bookmark),
-                SizedBox(width: 15),
-                Icon(Icons.search),
-              ],
+            ListTile(
+              leading: const Icon(Icons.bookmark),
+              title: const Text("Bookmarks"),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.search),
+              title: const Text("Search"),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.settings),
+              title: const Text("Settings"),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.help),
+              title: const Text("Help"),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.info),
+              title: const Text("About"),
+              onTap: () {
+                Navigator.pop(context);
+              },
             ),
           ],
         ),
       ),
       body: Column(
         children: [
-          // Fixed Top Section
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
             child: CarouselSlider(
@@ -100,11 +138,27 @@ class _HomeScreenState extends State<HomeScreen> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  NewsCard(id: 001, title: "Title 1", body: "Body 1", date: "Date 1"),
-                  NewsCard(id: 002, title: "Title 2", body: "Body 2", date: "Date 2"),
-                  NewsCard(id: 003, title: "Title 3", body: "Body 3", date: "Date 3"),
-                  NewsCard(id: 004, title: "Title 4", body: "Body 4", date: "Date 4"),
-                  NewsCard(id: 005, title: "Title 5", body: "Body 5", date: "Date 5"),
+                  NewsCard(
+                    id: 1,
+                    title: "Animals get boost from Southampton tree vandals",
+                    body: "Details of the news here...",
+                    date: "15 minutes ago",
+                    imageUrl: "https://via.placeholder.com/100", // Replace with your image URL
+                  ),
+                  NewsCard(
+                    id: 2,
+                    title: "Animals get boost from Southampton tree vandals",
+                    body: "Details of the news here...",
+                    date: "15 minutes ago",
+                    imageUrl: "https://via.placeholder.com/100", // Replace with your image URL
+                  ),
+                  NewsCard(
+                    id: 3,
+                    title: "Animals get boost from Southampton tree vandals",
+                    body: "Details of the news here...",
+                    date: "15 minutes ago",
+                    imageUrl: "https://via.placeholder.com/100", // Replace with your image URL
+                  ),
                 ],
               ),
             ),
@@ -112,7 +166,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: Colors.blue,
+        selectedItemColor: Colors.orange,
         unselectedItemColor: Colors.black,
         currentIndex: _currentIndex,
         onTap: (index) {
@@ -140,5 +194,19 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
     );
+  }
+
+  _buildHeader(){
+      return const DrawerHeader(
+          decoration: BoxDecoration(
+            color: Colors.orange
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+                Text("MENU",style: TextStyle(color: Colors.white, fontSize: 30),)
+            ],
+          )
+      );
   }
 }

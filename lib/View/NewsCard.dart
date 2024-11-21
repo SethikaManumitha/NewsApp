@@ -99,7 +99,7 @@ class _NewsCardState extends State<NewsCard> {
             Padding(
               padding: const EdgeInsets.only(right: 8.0),
               child: IconButton(
-                icon: const Icon(Icons.bookmark_outline),
+                icon: Icon(isIconPressed ? Icons.bookmark : Icons.bookmark_outline),
                 color: isIconPressed ? Colors.orange : Colors.black,
                 onPressed: () {
                   setState(() {

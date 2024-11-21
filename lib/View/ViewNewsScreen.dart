@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class ViewNewsScreen extends StatelessWidget {
+class ViewNewsScreen extends StatefulWidget {
   final int id;
   final String title;
   final String body;
@@ -17,49 +17,150 @@ class ViewNewsScreen extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<ViewNewsScreen> createState() => _ViewNewsScreenState();
+}
+
+class _ViewNewsScreenState extends State<ViewNewsScreen> {
+  int _currentIndex = 0;
+  bool isIconPressed = false;
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          IconButton(
+              icon: Icon(isIconPressed ? Icons.bookmark : Icons.bookmark_outline),
+              color: isIconPressed ? Colors.white : Colors.black,
+              onPressed: () {
+                setState(() {
+                  isIconPressed = !isIconPressed;
+                });
+              },
+          )
+        ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.network(
-                  imageUrl,
-                  width: double.infinity,
-                  height: 200,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      width: double.infinity,
-                      height: 200,
-                      color: Colors.grey[300],
-                      child: const Icon(
-                        Icons.broken_image,
-                        size: 40,
-                        color: Colors.grey,
-                      ),
-                    );
-                  },
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              children: [
+                Container(
+                  height: 300,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(widget.imageUrl),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
+                Positioned(
+                  bottom: 10,
+                  left: 10,
+                  child: Row(
+                    children: [
+                      Text(
+                        widget.date,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Positioned(
+                  bottom: 10,
+                  right: 10,
+                  child: Row(
+                    children: [
+                      SizedBox(width: 10),
+                      Icon(Icons.visibility, color: Colors.white, size: 16),
+                      SizedBox(width: 5),
+                      Text(
+                        '916',
+                        style: TextStyle(color: Colors.white, fontSize: 12),
+                      ),
+                      SizedBox(width: 10),
+                      Icon(Icons.comment, color: Colors.white, size: 16),
+                      SizedBox(width: 5),
+                      Text(
+                        '27',
+                        style: TextStyle(color: Colors.white, fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 15),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: Row(
+                children: [
+                  Container(
+                    width: 5,
+                    height: 40,
+                    color: Colors.orange,
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      widget.title,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 2, // Adjusts for multiline titles
+                      overflow: TextOverflow.ellipsis, // Handles text overflow gracefully
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 16),
-              Text(
-                date,
-                style: TextStyle(color: Colors.grey[600], fontSize: 14),
+            ),
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: Text(
+                widget.body,
+                style: const TextStyle(fontSize: 16, color: Colors.grey),
               ),
-              const SizedBox(height: 16),
-              Text(
-                body,
-                style: const TextStyle(fontSize: 16),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: Colors.orange,
+        unselectedItemColor: Colors.black,
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: 'Search',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.bookmark),
+            label: 'Bookmark',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
+        ],
       ),
     );
   }

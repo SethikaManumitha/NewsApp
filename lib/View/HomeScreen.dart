@@ -13,7 +13,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
 
-  final List<String> imageUrls = [
+  List<String> imageUrls = [
     'https://via.placeholder.com/400x200/FF0000/FFFFFF?text=Image+1',
     'https://via.placeholder.com/400x200/00FF00/FFFFFF?text=Image+2',
     'https://via.placeholder.com/400x200/0000FF/FFFFFF?text=Image+3',

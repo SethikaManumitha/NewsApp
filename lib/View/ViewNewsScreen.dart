@@ -29,12 +29,13 @@ class _ViewNewsScreenState extends State<ViewNewsScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
           IconButton(
               icon: Icon(isIconPressed ? Icons.bookmark : Icons.bookmark_outline),
-              color: isIconPressed ? Colors.white : Colors.black,
+              color: Colors.white,
               onPressed: () {
                 setState(() {
                   isIconPressed = !isIconPressed;

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'ViewNewsScreen.dart'; // Import the ViewNoteScreen class
+import '../View/ViewNewsScreen.dart';
 
-class NewsCard extends StatefulWidget {
-  final int? id;
+class NewsCard extends StatelessWidget {
+  final int id;
   final String title;
   final String body;
   final String date;
@@ -18,13 +18,6 @@ class NewsCard extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<NewsCard> createState() => _NewsCardState();
-}
-
-class _NewsCardState extends State<NewsCard> {
-  bool isIconPressed = false;
-
-  @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 3,
@@ -32,16 +25,15 @@ class _NewsCardState extends State<NewsCard> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: InkWell(
         onTap: () {
-          // Navigate to ViewNoteScreen
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => ViewNewsScreen(
-                id: widget.id ?? 0,
-                title: widget.title,
-                body: widget.body,
-                date: widget.date,
-                imageUrl: widget.imageUrl,
+                id: id,
+                title: title,
+                body: body,
+                date: date,
+                imageUrl: imageUrl,
               ),
             ),
           );
@@ -54,7 +46,7 @@ class _NewsCardState extends State<NewsCard> {
                 bottomLeft: Radius.circular(10),
               ),
               child: Image.network(
-                widget.imageUrl,
+                imageUrl,
                 width: 100,
                 height: 100,
                 fit: BoxFit.cover,
@@ -73,13 +65,12 @@ class _NewsCardState extends State<NewsCard> {
               ),
             ),
             const SizedBox(width: 10),
-            // Text content
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.title,
+                    title,
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -89,23 +80,10 @@ class _NewsCardState extends State<NewsCard> {
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    widget.date,
+                    date,
                     style: TextStyle(color: Colors.grey[600], fontSize: 12),
                   ),
                 ],
-              ),
-            ),
-            // Bookmark icon
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: IconButton(
-                icon: Icon(isIconPressed ? Icons.bookmark : Icons.bookmark_outline),
-                color: isIconPressed ? Colors.orange : Colors.black,
-                onPressed: () {
-                  setState(() {
-                    isIconPressed = !isIconPressed;
-                  });
-                },
               ),
             ),
           ],

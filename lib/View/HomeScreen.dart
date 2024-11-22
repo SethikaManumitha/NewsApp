@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-
-import 'NewsCard.dart';
+import '../Models/NewsCard.dart';
+import '../Services/ApiService.dart';
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen({super.key});
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -12,13 +12,27 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
+  List<dynamic> articles = [];
+  bool isLoading = true;
 
-  List<String> imageUrls = [
-    'https://via.placeholder.com/400x200/FF0000/FFFFFF?text=Image+1',
-    'https://via.placeholder.com/400x200/00FF00/FFFFFF?text=Image+2',
-    'https://via.placeholder.com/400x200/0000FF/FFFFFF?text=Image+3',
-    'https://via.placeholder.com/400x200/FFFF00/FFFFFF?text=Image+4',
-  ];
+  final ApiService _apiService = ApiService();
+
+  Future<void> fetchNewsData() async {
+    setState(() {
+      isLoading = true;
+    });
+    final fetchedArticles = await _apiService.fetchNews();
+    setState(() {
+      articles = fetchedArticles;
+      isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchNewsData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,56 +51,24 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: EdgeInsets.zero,
           children: [
             _buildHeader(),
-            ListTile(
-              leading: const Icon(Icons.home),
-              title: const Text("Home"),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.bookmark),
-              title: const Text("Bookmarks"),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.search),
-              title: const Text("Search"),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text("Settings"),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
+            _buildDrawerItem(Icons.home, "Home", () {}),
+            _buildDrawerItem(Icons.bookmark, "Bookmarks", () {}),
+            _buildDrawerItem(Icons.search, "Search", () {}),
+            _buildDrawerItem(Icons.settings, "Settings", () {}),
             const Divider(),
-            ListTile(
-              leading: const Icon(Icons.help),
-              title: const Text("Help"),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.info),
-              title: const Text("About"),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
+            _buildDrawerItem(Icons.help, "Help", () {}),
+            _buildDrawerItem(Icons.info, "About", () {}),
           ],
         ),
       ),
-      body: Column(
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : articles.isEmpty
+          ? const Center(child: Text("No news available."))
+          : Column(
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+            padding: const EdgeInsets.symmetric(vertical: 20),
             child: CarouselSlider(
               options: CarouselOptions(
                 height: 200.0,
@@ -96,20 +78,51 @@ class _HomeScreenState extends State<HomeScreen> {
                 enableInfiniteScroll: true,
                 viewportFraction: 0.8,
               ),
-              items: imageUrls.map((url) {
+              items: articles.take(4).map((article) {
+                final imageUrl = article['urlToImage'] ?? 'https://via.placeholder.com/400x200';
+                final title = article['title'] ?? 'No title';
                 return Builder(
                   builder: (BuildContext context) {
                     return Container(
-                      width: MediaQuery.of(context).size.width,
+                      margin: const EdgeInsets.symmetric(horizontal: 5.0),
                       decoration: BoxDecoration(
                         color: Colors.amber,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        child: Image.network(
-                          url,
-                          fit: BoxFit.cover,
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            Image.network(
+                              imageUrl,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Image.network(
+                                  'https://via.placeholder.com/400x200',
+                                  fit: BoxFit.cover,
+                                );
+                              },
+                            ),
+                            Container(
+                              color: Colors.black.withOpacity(0.3),
+                            ),
+                            Positioned(
+                              bottom: 10,
+                              left: 10,
+                              right: 10,
+                              child: Text(
+                                title,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     );
@@ -118,49 +131,28 @@ class _HomeScreenState extends State<HomeScreen> {
               }).toList(),
             ),
           ),
-          const Divider(
-            thickness: 2,
-            indent: 20,
-            endIndent: 20,
-          ),
+          const Divider(thickness: 2, indent: 20, endIndent: 20),
           const Padding(
             padding: EdgeInsets.all(8.0),
             child: Row(
               children: [
-                Text(
-                  "Latest News",
-                  style: TextStyle(fontSize: 24),
-                ),
+                Text("Latest News", style: TextStyle(fontSize: 24)),
               ],
             ),
           ),
-          const Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  NewsCard(
-                    id: 1,
-                    title: "Animals get boost from Southampton tree vandals",
-                    body: "Details of the news here...",
-                    date: "15 minutes ago",
-                    imageUrl: "https://via.placeholder.com/100", // Replace with your image URL
-                  ),
-                  NewsCard(
-                    id: 2,
-                    title: "Animals get boost from Southampton tree vandals",
-                    body: "Details of the news here...",
-                    date: "15 minutes ago",
-                    imageUrl: "https://via.placeholder.com/100", // Replace with your image URL
-                  ),
-                  NewsCard(
-                    id: 3,
-                    title: "Animals get boost from Southampton tree vandals",
-                    body: "Details of the news here...",
-                    date: "15 minutes ago",
-                    imageUrl: "https://via.placeholder.com/100", // Replace with your image URL
-                  ),
-                ],
-              ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: articles.length,
+              itemBuilder: (context, index) {
+                final article = articles[index];
+                return NewsCard(
+                  id: index,
+                  title: article['title'] ?? 'No title',
+                  body: article['description'] ?? 'No description',
+                  date: article['publishedAt'] ?? 'No date',
+                  imageUrl: article['urlToImage'] ?? 'https://via.placeholder.com/100',
+                );
+              },
             ),
           ),
         ],
@@ -175,38 +167,29 @@ class _HomeScreenState extends State<HomeScreen> {
           });
         },
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bookmark),
-            label: 'Bookmark',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
+          BottomNavigationBarItem(icon: Icon(Icons.bookmark), label: 'Bookmark'),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
         ],
       ),
     );
   }
 
-  _buildHeader(){
-      return const DrawerHeader(
-          decoration: BoxDecoration(
-            color: Colors.orange
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-                Text("MENU",style: TextStyle(color: Colors.white, fontSize: 30),)
-            ],
-          )
-      );
+  Widget _buildHeader() {
+    return const DrawerHeader(
+      decoration: BoxDecoration(color: Colors.orange),
+      child: Center(
+        child: Text("MENU", style: TextStyle(color: Colors.white, fontSize: 30)),
+      ),
+    );
+  }
+
+  Widget _buildDrawerItem(IconData icon, String title, VoidCallback onTap) {
+    return ListTile(
+      leading: Icon(icon),
+      title: Text(title),
+      onTap: onTap,
+    );
   }
 }

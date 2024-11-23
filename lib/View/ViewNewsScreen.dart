@@ -56,6 +56,10 @@ class _ViewNewsScreenState extends State<ViewNewsScreen> {
                     image: DecorationImage(
                       image: NetworkImage(widget.imageUrl),
                       fit: BoxFit.cover,
+                      colorFilter: ColorFilter.mode(
+                        Colors.black.withOpacity(0.3),
+                        BlendMode.darken,
+                      ),
                     ),
                   ),
                 ),
@@ -117,8 +121,8 @@ class _ViewNewsScreenState extends State<ViewNewsScreen> {
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
-                      maxLines: 2, // Adjusts for multiline titles
-                      overflow: TextOverflow.ellipsis, // Handles text overflow gracefully
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],
@@ -134,34 +138,6 @@ class _ViewNewsScreenState extends State<ViewNewsScreen> {
             ),
           ],
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: Colors.orange,
-        unselectedItemColor: Colors.black,
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bookmark),
-            label: 'Bookmark',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-        ],
       ),
     );
   }

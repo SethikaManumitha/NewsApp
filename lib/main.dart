@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
-
-// View Imports
-import 'package:news_app/View/HomeScreen.dart';
+import 'package:provider/provider.dart';
+import 'Providers/ThemeProviders.dart';
+import 'View/HomeScreen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => ThemeProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -12,12 +17,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return MaterialApp(
       title: 'News App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const HomeScreen(),
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      themeMode: themeProvider.themeMode, // Use ThemeMode from ThemeProvider
+      home: const Home(),
     );
   }
 }

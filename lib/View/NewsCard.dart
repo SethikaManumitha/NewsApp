@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../View/ViewNewsScreen.dart';
+import 'ViewNewsScreen.dart';
 
 class NewsCard extends StatelessWidget {
   final int id;

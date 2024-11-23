@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import '../NewsCard.dart';
 import '../../Services/ApiService.dart';
 import '../ViewNewsScreen.dart';
+import 'package:intl/intl.dart';
 
 class HomeTab extends StatefulWidget {
   const HomeTab({super.key});
@@ -12,7 +13,6 @@ class HomeTab extends StatefulWidget {
 }
 
 class _HomeTabState extends State<HomeTab> {
-  int _currentIndex = 0;
   List<dynamic> topArticles = [];
   List<dynamic> latestArticles = [];
   bool isLoading = true;
@@ -40,24 +40,18 @@ class _HomeTabState extends State<HomeTab> {
     fetchNewsData();
   }
 
+  String formatDate(String dateString) {
+    try {
+      DateTime dateTime = DateTime.parse(dateString);
+      return DateFormat('dd MMM yyyy, HH:mm').format(dateTime);
+    } catch (e) {
+      return 'Invalid date';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            _buildHeader(),
-            _buildDrawerItem(Icons.home, "Home", () {}),
-            _buildDrawerItem(Icons.bookmark, "Bookmarks", () {}),
-            _buildDrawerItem(Icons.search, "Search", () {}),
-            _buildDrawerItem(Icons.settings, "Settings", () {}),
-            const Divider(),
-            _buildDrawerItem(Icons.help, "Help", () {}),
-            _buildDrawerItem(Icons.info, "About", () {}),
-          ],
-        ),
-      ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : Column(
@@ -150,17 +144,26 @@ class _HomeTabState extends State<HomeTab> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: latestArticles.length,
-              itemBuilder: (context, index) {
-                final article = latestArticles[index];
-                return NewsCard(
-                  id: index,
-                  title: article['title'] ?? 'No title',
-                  body: article['description'] ?? 'No description',
-                  date: article['publishedAt'] ?? 'No date',
-                  imageUrl: article['urlToImage'] ?? 'https://via.placeholder.com/100',
-                );
+            child: Builder(
+              builder: (context) {
+                if (latestArticles.isEmpty) {
+                  return const Center(child: Text("No latest articles found"));
+                } else {
+                  return ListView.builder(
+                    itemCount: latestArticles.length,
+                    itemBuilder: (context, index) {
+                      final article = latestArticles[index];
+                      final formattedDate = formatDate(article['publishedAt'] ?? '');
+                      return NewsCard(
+                        id: index,
+                        title: article['title'] ?? 'No title',
+                        body: article['description'] ?? 'No description',
+                        date: formattedDate,
+                        imageUrl: article['urlToImage'] ?? 'https://via.placeholder.com/100',
+                      );
+                    },
+                  );
+                }
               },
             ),
           ),
@@ -168,22 +171,4 @@ class _HomeTabState extends State<HomeTab> {
       ),
     );
   }
-
-  Widget _buildHeader() {
-    return const DrawerHeader(
-      decoration: BoxDecoration(color: Colors.orange),
-      child: Center(
-        child: Text("MENU", style: TextStyle(color: Colors.white, fontSize: 30)),
-      ),
-    );
-  }
-
-  Widget _buildDrawerItem(IconData icon, String title, VoidCallback onTap) {
-    return ListTile(
-      leading: Icon(icon),
-      title: Text(title),
-      onTap: onTap,
-    );
-  }
 }
-

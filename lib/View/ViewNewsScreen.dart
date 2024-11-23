@@ -21,7 +21,6 @@ class ViewNewsScreen extends StatefulWidget {
 }
 
 class _ViewNewsScreenState extends State<ViewNewsScreen> {
-  int _currentIndex = 0;
   bool isIconPressed = false;
 
   @override
@@ -74,28 +73,6 @@ class _ViewNewsScreenState extends State<ViewNewsScreen> {
                           color: Colors.white,
                           fontSize: 12,
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                const Positioned(
-                  bottom: 10,
-                  right: 10,
-                  child: Row(
-                    children: [
-                      SizedBox(width: 10),
-                      Icon(Icons.visibility, color: Colors.white, size: 16),
-                      SizedBox(width: 5),
-                      Text(
-                        '916',
-                        style: TextStyle(color: Colors.white, fontSize: 12),
-                      ),
-                      SizedBox(width: 10),
-                      Icon(Icons.comment, color: Colors.white, size: 16),
-                      SizedBox(width: 5),
-                      Text(
-                        '27',
-                        style: TextStyle(color: Colors.white, fontSize: 12),
                       ),
                     ],
                   ),

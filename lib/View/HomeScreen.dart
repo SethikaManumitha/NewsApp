@@ -4,15 +4,17 @@ import 'Tabs/SettingsTab.dart';
 import 'Tabs/SearchTab.dart';
 import 'Tabs/BookMarkTab.dart';
 
-class Home extends StatefulWidget {
-  const Home({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
+  bool _isSearchVisible = false;
+  final TextEditingController _searchController = TextEditingController();
 
   final List<Widget> _screens = [
     const HomeTab(),
@@ -27,6 +29,13 @@ class _HomeState extends State<Home> {
     });
   }
 
+  void _toggleSearchBar() {
+    setState(() {
+      _isSearchVisible = !_isSearchVisible;
+      if (!_isSearchVisible) _searchController.clear();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // Check the current theme mode
@@ -34,11 +43,30 @@ class _HomeState extends State<Home> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("News App"),
-        actions: const [
-          Icon(Icons.bookmark),
-          SizedBox(width: 15),
-          Icon(Icons.search),
+        title: _isSearchVisible
+            ? TextField(
+          controller: _searchController,
+          onChanged: (value) {
+            // Handle search query changes
+          },
+          autofocus: true,
+          decoration: InputDecoration(
+            hintText: "Search...",
+            border: InputBorder.none,
+            hintStyle: TextStyle(
+              color: isDarkMode ? Colors.white70 : Colors.black54,
+            ),
+          ),
+          style: TextStyle(
+            color: isDarkMode ? Colors.white : Colors.black,
+          ),
+        )
+            : const Text("News App"),
+        actions: [
+          IconButton(
+            icon: Icon(_isSearchVisible ? Icons.close : Icons.search),
+            onPressed: _toggleSearchBar,
+          ),
         ],
       ),
       body: _screens[_currentIndex],

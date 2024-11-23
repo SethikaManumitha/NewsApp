@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'ViewNewsScreen.dart';
 
-class NewsCard extends StatelessWidget {
+class NewsCard extends StatefulWidget {
   final int id;
   final String title;
   final String body;
@@ -18,6 +18,19 @@ class NewsCard extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  _NewsCardState createState() => _NewsCardState();
+}
+
+class _NewsCardState extends State<NewsCard> {
+  bool isBookmarked = false;
+
+  void toggleBookmark() {
+    setState(() {
+      isBookmarked = !isBookmarked;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 3,
@@ -29,11 +42,11 @@ class NewsCard extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => ViewNewsScreen(
-                id: id,
-                title: title,
-                body: body,
-                date: date,
-                imageUrl: imageUrl,
+                id: widget.id,
+                title: widget.title,
+                body: widget.body,
+                date: widget.date,
+                imageUrl: widget.imageUrl,
               ),
             ),
           );
@@ -46,7 +59,7 @@ class NewsCard extends StatelessWidget {
                 bottomLeft: Radius.circular(10),
               ),
               child: Image.network(
-                imageUrl,
+                widget.imageUrl,
                 width: 100,
                 height: 100,
                 fit: BoxFit.cover,
@@ -70,7 +83,7 @@ class NewsCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
+                    widget.title,
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -80,11 +93,18 @@ class NewsCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    date,
+                    widget.date,
                     style: TextStyle(color: Colors.grey[600], fontSize: 12),
                   ),
                 ],
               ),
+            ),
+            IconButton(
+              icon: Icon(
+                isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                color: isBookmarked ? Colors.orange : Colors.grey,
+              ),
+              onPressed: toggleBookmark,
             ),
           ],
         ),
